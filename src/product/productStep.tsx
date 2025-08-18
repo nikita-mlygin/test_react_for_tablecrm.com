@@ -28,6 +28,7 @@ export const ProductsStep: React.FC<ProductsStepProps> = ({
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [productModalVisible, setProductModalVisible] = useState(false);
+  const [selectorVisible, setSelectorVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] =
     useState<SelectedProduct | null>(null);
   const [editingPriceId, setEditingPriceId] = useState<number | null>(null);
@@ -58,8 +59,6 @@ export const ProductsStep: React.FC<ProductsStepProps> = ({
       priceTypeName: 0,
       discount: 0,
     };
-
-    console.log(selected);
 
     updateDraft((d) => {
       const map = new Map(d.products?.map((p) => [p.id, { ...p }]) || []);
@@ -232,10 +231,11 @@ export const ProductsStep: React.FC<ProductsStepProps> = ({
       />
 
       <Button
+        style={{ marginTop: 12 }}
         icon={<ShoppingCartOutlined />}
-        onClick={() => setProductModalVisible(true)}
+        onClick={() => setSelectorVisible(true)}
       >
-        выбрать товары ({draft.products?.length || 0})
+        Выбрать товар ({draft.products?.length || 0})
       </Button>
 
       <Modal
@@ -256,13 +256,11 @@ export const ProductsStep: React.FC<ProductsStepProps> = ({
         )}
       </Modal>
 
-      {/* <ProductSelector
-        visible={productModalVisible}
-        onClose={() => setProductModalVisible(false)}
-        onAdd={(items: SelectedProduct[]) => {
-          items.forEach(handleAddProduct);
-        }}
-      /> */}
+      <ProductSelector
+        visible={selectorVisible}
+        onClose={() => setSelectorVisible(false)}
+        onAdd={handleAddProduct}
+      />
     </Form.Item>
   );
 };

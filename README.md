@@ -1,69 +1,44 @@
-# React + TypeScript + Vite
+# Test React App for Tablecrm.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Этот проект — демонстрационный React-приложение для интеграции с TableCRM API с использованием Vite и React Query.  
+Он реализует интерактивное создание заказов, управление товарами, складскими остатками и счетами.
 
-Currently, two official plugins are available:
+## Технологии
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React + TypeScript**
+- **Vite** с HMR для быстрой разработки
+- **Ant Design** для UI-компонентов
+- **React Query** для запросов к API и кэширования данных
+- **Axios** для HTTP-запросов
+- **ESLint** с поддержкой TypeScript и React
 
-## Expanding the ESLint configuration
+## Основные возможности
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Пошаговый процесс создания заказа**
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- выбор клиента, организации, склада, типа цены и счета
+- валидация обязательных полей
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+2. **Поиск и добавление товаров**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `AutoComplete` с **debounce 300 мс** для минимизации количества запросов к API
+- добавление товаров с управлением количеством и ценой
+- редактирование скидок и заметок на лету
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Управление складами**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- отображение остатков по складам
+- возможность развернуть/свернуть список складов
+- подгрузка складов по порциям для производительности
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Обзор заказа**
+
+- визуализация в виде чека
+- подсчет итоговой суммы с учетом скидок и количества
+- адаптация под мобильные устройства
+
+5. **Интеграция с TableCRM API**
+
+- запросы клиентов, товаров, складов, счетов и типов цен через `React Query`
+- кэширование и оптимизация повторных запросов
+- поддержка POST-запросов для массовой загрузки товаров по ID

@@ -119,15 +119,26 @@ export const useNomenclatureByCategory = (categoryKey?: number) =>
             with_prices: true,
             with_balance: true,
             in_warehouse: 0,
-            limit: 100000,
+            limit: 100,
           },
         }
       );
       return res.data.result.map((p: any) => ({
         id: p.id,
         name: p.name,
-        price: p.prices?.[0]?.price || 0,
-      })) as Product[];
+        code: p.code,
+        unit_name: p.unit_name,
+        prices: p.prices?.map((pr: any) => ({
+          price_type: pr.price_type,
+          price: pr.price,
+        })),
+        balances: p.balances?.map((b: any) => ({
+          warehouse_name: b.warehouse_name,
+          current_amount: b.current_amount,
+        })),
+        category: p.category,
+        description_short: p.description_short,
+      }));
     },
     enabled: !!categoryKey,
   });
@@ -278,13 +289,21 @@ export const usePayboxes = (name?: string) =>
     },
   });
 
-export const useCategoriesTree = () =>
+export const useCategoriesTree = (category?: number) =>
   useQuery<CategoryNode[]>({
     queryKey: ["categoriesTree"],
     queryFn: async () => {
       const res = await axios.get(
         "https://app.tablecrm.com/api/v1/categories_tree/",
-        { params: { token: TOKEN } }
+        {
+          params: {
+            token: TOKEN,
+            with_prices: true,
+            with_balance: true,
+            limit: 100,
+            category: category,
+          },
+        }
       );
       return res.data.result as CategoryNode[];
     },
