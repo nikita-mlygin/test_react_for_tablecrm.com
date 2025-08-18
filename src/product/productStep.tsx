@@ -249,8 +249,8 @@ export const ProductsStep: React.FC<ProductsStepProps> = ({
             product={selectedProduct}
             onChange={(updated) => {
               updateProductInDraft(updated);
-              setProductModalVisible(false);
-              setSelectedProduct(null);
+              setSelectedProduct(updated);
+              console.log("here");
             }}
           />
         )}
