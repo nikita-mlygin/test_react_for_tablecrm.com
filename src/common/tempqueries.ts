@@ -3,6 +3,9 @@ import axios from "axios";
 import type {
   CategoryNode,
   Contragent,
+  DocSaleCreateItem,
+  DocSaleCreateMass,
+  DocSaleItem,
   LoyaltyCard,
   Organization,
   Paybox,
@@ -10,7 +13,8 @@ import type {
   SalePayload,
   Warehouse,
 } from "./tmptypes";
-import type { Product } from "../product/product";
+import type { Product, SelectedProduct } from "../product/product";
+import type { OrderDraft } from "../order/orderDraft";
 
 // константа с токеном
 const TOKEN =
@@ -127,6 +131,7 @@ export const useNomenclatureByCategory = (categoryKey?: number) =>
         id: p.id,
         name: p.name,
         code: p.code,
+        unit: p.unit,
         unit_name: p.unit_name,
         prices: p.prices?.map((pr: any) => ({
           price_type: pr.price_type,
@@ -180,6 +185,7 @@ export const useNomenclatureSearch = (name?: string) =>
         id: p.id,
         name: p.name,
         code: p.code,
+        unit: p.unit,
         unit_name: p.unit_name,
         prices: p.prices?.map((pr: any) => ({
           price_type: pr.price_type,
@@ -210,6 +216,7 @@ export const useNomenclatureById = (id?: number) =>
         id: p.id,
         name: p.name,
         code: p.code,
+        unit: p.unit,
         unit_name: p.unit_name,
         category: p.category,
         description_short: p.description_short,
@@ -253,6 +260,7 @@ export const fetchProductById = async (queryClient: any, id: number) => {
         id: p.id,
         name: p.name,
         code: p.code,
+        unit: p.unit,
         unit_name: p.unit_name,
         category: p.category,
         description_short: p.description_short,
@@ -307,4 +315,47 @@ export const useCategoriesTree = (category?: number) =>
       );
       return res.data.result as CategoryNode[];
     },
+  });
+
+const mapProductsToDocSaleItems = (
+  products: SelectedProduct[],
+  priceType: number
+): DocSaleItem[] =>
+  products.map((p) => ({
+    nomenclature: p.id,
+    nomenclature_name: p.name,
+    quantity: p.qty,
+    price: p.price,
+    price_type: priceType,
+    unit: p.unit,
+    unit_name: p.unit_name,
+    discount: p.discount,
+    sum_discounted: p.discount,
+  }));
+
+const mapOrderDraftToDocSale = (order: OrderDraft): DocSaleCreateItem => ({
+  client: order.client_id,
+  contragent: order.client_id, // если нужно
+  organization: order.organization_id!,
+  warehouse: order.warehouse_id,
+  paybox: order.paybox_id,
+  loyality_card_id: order.loyality_card_id,
+  status: order.status,
+  goods: mapProductsToDocSaleItems(order.products, order.price_type ?? -1),
+  paid_rubles: order.sum,
+});
+
+export const useCreateDocSaleFromDraft = () =>
+  useMutation({
+    mutationFn: async (order: OrderDraft) => {
+      const payload: DocSaleCreateMass = [mapOrderDraftToDocSale(order)];
+      const res = await axios.post(
+        "https://app.tablecrm.com/api/v1/docs_sales/",
+        payload,
+        { params: { token: TOKEN, generate_out: true } }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => console.log("doc sale created", data),
+    onError: (err: any) => console.error("creation failed", err),
   });

@@ -92,3 +92,56 @@ export interface Paybox {
   organization_id: number | null;
   updated_at: number;
 }
+
+export type DocSaleSettings = {
+  repeatability_period?: string; // например, "minutes"
+  repeatability_value?: number;
+  date_next_created?: number;
+  transfer_from_weekends?: boolean;
+  skip_current_month?: boolean;
+  repeatability_count?: number;
+  default_payment_status?: boolean;
+  repeatability_tags?: boolean;
+  repeatability_status?: boolean;
+};
+
+export type DocSaleItem = {
+  price_type?: number;
+  price: number;
+  quantity: number;
+  unit?: number;
+  unit_name?: string;
+  tax?: number;
+  discount?: number;
+  sum_discounted?: number;
+  status?: string;
+  nomenclature: string | number;
+  nomenclature_name?: string;
+};
+
+export type DocSaleCreateItem = {
+  number?: string;
+  dated?: number;
+  operation?: string;
+  tags?: string;
+  parent_docs_sales?: number;
+  comment?: string;
+  client?: number;
+  contragent?: number;
+  contract?: number;
+  organization: number;
+  loyality_card_id?: number;
+  warehouse?: number;
+  paybox?: number;
+  tax_included?: boolean;
+  tax_active?: boolean;
+  settings?: DocSaleSettings;
+  sales_manager?: number;
+  paid_rubles?: number;
+  paid_lt?: number;
+  status?: boolean;
+  goods?: DocSaleItem[];
+  priority?: number;
+};
+
+export type DocSaleCreateMass = DocSaleCreateItem[];
