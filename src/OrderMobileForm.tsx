@@ -63,26 +63,27 @@ export const OrderMobileForm: React.FC = () => {
       });
     }
 
-    draft.status = conduct;
-
-    createDocSale(draft, {
-      onSuccess: (res: any) => {
-        modal.success({
-          title: "Успешно",
-          content: `Документ создан: ${res[0].number}`,
-          okText: "Ок",
-        });
-        resetDraft();
-        setCurrentStep(0);
-      },
-      onError: (err: any) => {
-        modal.error({
-          title: "Ошибка",
-          content: err?.message || "Ошибка при создании документа",
-          okText: "Закрыть",
-        });
-      },
-    });
+    createDocSale(
+      { ...draft, status: conduct },
+      {
+        onSuccess: (res: any) => {
+          modal.success({
+            title: "Успешно",
+            content: `Документ создан: ${res[0].number}`,
+            okText: "Ок",
+          });
+          resetDraft();
+          setCurrentStep(0);
+        },
+        onError: (err: any) => {
+          modal.error({
+            title: "Ошибка",
+            content: err?.message || "Ошибка при создании документа",
+            okText: "Закрыть",
+          });
+        },
+      }
+    );
   };
 
   return (
